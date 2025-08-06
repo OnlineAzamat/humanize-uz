@@ -24,6 +24,14 @@
   "author": "Azamat",
   "license": "MIT",
   "description": "Raqam va sanalarni O‘zbek tilida inson o‘qiydigan ko‘rinishga keltiruvchi kutubxona",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/onlineazamat/humanize-uz.git"
+  },
+  "homepage": "https://github.com/onlineazamat/humanize-uz#readme",
+  "bugs": {
+    "url": "https://github.com/onlineazamat/humanize-uz/issues"
+  },
   "devDependencies": {
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"
