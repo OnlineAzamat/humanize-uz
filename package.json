@@ -1,8 +1,9 @@
 {
   "name": "humanize-uz",
   "version": "0.1.3",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "test": "vitest run"

@@ -8,6 +8,6 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true
   },
-  "include": ["src", "dist/number.js"],
+  "include": ["src", "dist/index.js"],
   "exclude": ["node_modules", "dist", "test"]
 }
