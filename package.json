@@ -1,9 +1,12 @@
 {
-  "name": "humanize-uz",
-  "version": "0.1.6",
+  "name": "@OnlineAzamat/humanize-uz",
+  "version": "0.1.7",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "test": "vitest run"
@@ -22,12 +25,12 @@
     "timeago",
     "intl"
   ],
-  "author": "Azamat",
+  "author": "Azamat Yakubbaev",
   "license": "MIT",
   "description": "Raqam va sanalarni O‘zbek tilida inson o‘qiydigan ko‘rinishga keltiruvchi kutubxona",
   "repository": {
     "type": "git",
-    "url": "https://github.com/onlineazamat/humanize-uz.git"
+    "url": "git+https://github.com/OnlineAzamat/humanize-uz.git"
   },
   "homepage": "https://github.com/onlineazamat/humanize-uz#readme",
   "bugs": {
