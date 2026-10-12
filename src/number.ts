@@ -1,13 +1,36 @@
+const SHORT_SCALES: [number, string][] = [
+  [1e12, "trillion"],
+  [1e9, "milliard"],
+  [1e6, "million"],
+  [1e3, "ming"],
+];
+
+/**
+ * Katta sonlarni qisqa ko'rinishda ifodalash
+ * @example humanizeNumber(1500) // "1.5 ming"
+ */
 export function humanizeNumber(n: number): string {
-  if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1) + " milliard"
-  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + " million"
-  if (n >= 1_000) return (n / 1_000).toFixed(1) + " ming"
-  return n.toString()
+  if (!Number.isFinite(n)) return String(n);
+  const sign = n < 0 ? "-" : "";
+  const abs = Math.abs(n);
+
+  for (let i = 0; i < SHORT_SCALES.length; i++) {
+    const [value, name] = SHORT_SCALES[i];
+    if (abs < value) continue;
+    const rounded = Math.round((abs / value) * 10) / 10;
+    // 999 999 -> "1000 ming" emas, "1 million" bo'lishi kerak
+    if (rounded >= 1000 && i > 0) {
+      const [upValue, upName] = SHORT_SCALES[i - 1];
+      return `${sign}${Math.round((abs / upValue) * 10) / 10} ${upName}`;
+    }
+    return `${sign}${rounded} ${name}`;
+  }
+  return String(n);
 }
 
-const ONES = ["", "bir", "ikki", "uch", "to'rt", "besh", "olti", "yetti", "sakkiz", "to'qqiz"];
-const TENS = ["", "o'n", "yigirma", "o'ttiz", "qirq", "ellik", "oltmish", "yetmish", "sakson", "to'qson"];
-const SCALES = ["", "ming", "million", "milliard", "trillion"];
+const ONES = ["", "bir", "ikki", "uch", "to\u02BBrt", "besh", "olti", "yetti", "sakkiz", "to\u02BBqqiz"];
+const TENS = ["", "o\u02BBn", "yigirma", "o\u02BBttiz", "qirq", "ellik", "oltmish", "yetmish", "sakson", "to\u02BBqson"];
+const SCALES = ["", "ming", "million", "milliard", "trillion", "kvadrillion"];
 
 /**
  * Sonni so'zlar bilan ifodalash
@@ -15,6 +38,9 @@ const SCALES = ["", "ming", "million", "milliard", "trillion"];
  * @returns So'zlar bilan ifodalangan son: "yuz yigirma uch"
  */
 export function numberToWords(n: number): string {
+  if (!Number.isSafeInteger(n)) {
+    throw new RangeError(`numberToWords faqat butun sonlarni qabul qiladi: ${n}`);
+  }
   if (n === 0) return "nol";
   if (n < 0) return "minus " + numberToWords(Math.abs(n));
 
@@ -66,9 +92,6 @@ export function humanizeOrdinal(n: number, type: "short" | "full" = "short"): st
     return `${n}-`;
   }
 
-  const lastDigit = n % 10;
-  const lastTwoDigits = n % 100;
-
   // O'zbek tilida tartib sonlar:
   // 0 - inchi
   // 1 - inchi
@@ -113,10 +136,12 @@ export function humanizeOrdinal(n: number, type: "short" | "full" = "short"): st
   // 90 - to'qson (n - undosh) -> inchi
   // 100 - yuz (z - undosh) -> inchi
 
-  const vowels = [2, 6, 7, 20]; // Bu yerda faqat oxirgi qismi unli bilan tugaydiganlari
+  // Birliklar: ikki, olti, yetti; o'nliklar: yigirma — unli bilan tugaydi
+  const vowels = [2, 6, 7];
 
   // Murakkab sonlar uchun (masalan 22), oxirgi qismi muhim
-  if (vowels.includes(n) || (n > 10 && vowels.includes(n % 10)) || (n % 100 === 20)) {
+  const abs = Math.abs(n);
+  if (vowels.includes(abs % 10) || abs % 100 === 20) {
     return `${n}-nchi`;
   }
 

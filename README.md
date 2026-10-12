@@ -1,4 +1,5 @@
 [![npm version](https://badge.fury.io/js/humanize-uz.svg)](https://badge.fury.io/js/humanize-uz)
+[![CI](https://github.com/OnlineAzamat/humanize-uz/actions/workflows/ci.yml/badge.svg)](https://github.com/OnlineAzamat/humanize-uz/actions/workflows/ci.yml)
 
 # humanize-uz
 
@@ -17,8 +18,9 @@ npm install humanize-uz
 import { humanizeNumber, numberToWords, humanizeOrdinal } from "humanize-uz"
 
 // Qisqa ko'rinishda
-humanizeNumber(1250000) // "1.2 million"
+humanizeNumber(1250000) // "1.3 million"
 humanizeNumber(1500)    // "1.5 ming"
+humanizeNumber(999999)  // "1 million"
 
 // So'z bilan ifodalash
 numberToWords(123)      // "yuz yigirma uch"
@@ -30,19 +32,26 @@ humanizeOrdinal(2, "full")     // "2-nchi"
 humanizeOrdinal(3, "full")     // "3-inchi"
 ```
 
+> `numberToWords` faqat butun sonlarni qabul qiladi (aks holda `RangeError`) va rasmiy `ʻ` (U+02BB) belgisidan foydalanadi: `numberToWords(10) // "oʻn"`.
+
+```js
+```
+
 ### 2. Sana va vaqt
 ```js
 import { humanizeDate, timeAgo, humanizeTimeRange } from "humanize-uz"
 
-humanizeDate("2026-03-09") // "bugun"
-timeAgo(new Date(Date.now() - 3600 * 1000)) // "1 soat oldin"
+humanizeDate(new Date())                       // "bugun"
+humanizeDate(Date.now() + 86400000)            // "ertaga"
+timeAgo(new Date(Date.now() - 3600 * 1000))    // "1 soat oldin"
+timeAgo(new Date(Date.now() + 5 * 60 * 1000))  // "5 daqiqadan keyin"
 
 // Vaqt oralig'i
 humanizeTimeRange(
   new Date('2025-08-10T09:00'),
   new Date('2025-08-10T17:30')
 )
-// "10 avgust, 2025, 09:00 - 17:30"
+// "10-avgust, 2025, 09:00 - 17:30"
 ```
 
 ### 3. Valyuta va Fayl hajmi
@@ -52,6 +61,7 @@ import { humanizeCurrency, humanizeFileSize } from "humanize-uz"
 // Valyuta
 humanizeCurrency(125000)        // "125 000 soʻm"
 humanizeCurrency(100, 'USD')    // "$100"
+humanizeCurrency(1234.5)        // "1 234.5 soʻm"
 
 // Fayl hajmi
 humanizeFileSize(1024)          // "1 KB"
@@ -70,13 +80,20 @@ humanizePhoneNumber(998931234567)   // "+998 (93) 123-45-67"
 humanizeList(['olma', 'anor', 'behi']) // "olma, anor va behi"
 ```
 
-### 5. Ko'plik/Birlik (Pluralization)
-```js
-import { pluralizeUz } from "humanize-uz"
+### 5. `pluralizeUz` (eskirgan)
 
-pluralizeUz(1, 'kitob', 'kitoblar') // "kitob"
-pluralizeUz(5, 'kitob', 'kitoblar') // "kitoblar"
+O‘zbek tilida sondan keyin ot birlikda qoladi: **"5 kitob"**, "5 kitoblar" emas. Shu sababli `pluralizeUz` eskirgan (`@deprecated`) deb belgilandi va keyingi major versiyada olib tashlanadi.
+
+## Ishlab chiqish
+
+```bash
+npm install
+npm test           # testlar
+npm run typecheck  # TypeScript tekshiruvi
+npm run build      # dist/ papkasini yaratish
 ```
+
+`dist/` git'da saqlanmaydi: `npm publish` paytida `prepublishOnly` skripti uni avtomatik quradi va testlarni ishga tushiradi.
 
 ## Litsenziya
 MIT

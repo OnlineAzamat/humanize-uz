@@ -9,4 +9,15 @@ describe("humanizeCurrency", () => {
   it("should format 150000 as '$150 000'", () => {
     expect(humanizeCurrency(150000, 'USD').normalize("NFC")).toBe("$150 000".normalize("NFC"));
   });
+
+  it("should group only the integer part and keep up to 2 decimals", () => {
+    expect(humanizeCurrency(1234.5)).toBe("1 234.5 so\u02BBm");
+    expect(humanizeCurrency(0.1234, "USD")).toBe("$0.12");
+    expect(humanizeCurrency(1000)).toBe("1 000 so\u02BBm");
+  });
+
+  it("should put the minus sign before the currency symbol", () => {
+    expect(humanizeCurrency(-100, "USD")).toBe("-$100");
+    expect(humanizeCurrency(-1000)).toBe("-1 000 so\u02BBm");
+  });
 });

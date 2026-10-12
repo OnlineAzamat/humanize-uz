@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "module": "es2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "outDir": "./dist",
+    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true
   },
-  "include": ["src", "dist/index.js"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist", "test"]
 }

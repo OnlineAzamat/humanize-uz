@@ -8,4 +8,11 @@ describe("timeRange", () => {
       new Date('2025-08-10T17:30')
     )).toBe("10-avgust, 2025, 09:00 - 17:30");
   });
+
+  it("should include both dates when the range spans days", () => {
+    expect(humanizeTimeRange(
+      new Date('2025-08-10T09:00'),
+      new Date('2025-08-11T17:30')
+    )).toBe("10-avgust, 2025, 09:00 - 11-avgust, 2025, 17:30");
+  });
 });

@@ -1,15 +1,25 @@
 {
-  "name": "@OnlineAzamat/humanize-uz",
+  "name": "humanize-uz",
   "version": "1.0.0",
+  "description": "Raqam va sanalarni O‘zbek tilida inson o‘qiydigan ko‘rinishga keltiruvchi kutubxona",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
     "humanize",
@@ -27,7 +37,6 @@
   ],
   "author": "Azamat Yakubbaev",
   "license": "MIT",
-  "description": "Raqam va sanalarni O‘zbek tilida inson o‘qiydigan ko‘rinishga keltiruvchi kutubxona",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/OnlineAzamat/humanize-uz.git"
@@ -35,6 +44,9 @@
   "homepage": "https://github.com/onlineazamat/humanize-uz#readme",
   "bugs": {
     "url": "https://github.com/onlineazamat/humanize-uz/issues"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
