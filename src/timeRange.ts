@@ -9,5 +9,5 @@ export function humanizeTimeRange(start: Date, end: Date): string {
     return `${startDate}, ${start.toLocaleTimeString('uz-UZ', opts)} - ${end.toLocaleTimeString('uz-UZ', opts)}`;
   }
   
-  return `${startDate}, ${start.toLocaleTimeString('uz-UZ', opts)} - ${endDate} ${end.toLocaleTimeString('uz-UZ', opts)}`;
+  return `${startDate}, ${start.toLocaleTimeString('uz-UZ', opts)} - ${endDate}, ${end.toLocaleTimeString('uz-UZ', opts)}`;
 }

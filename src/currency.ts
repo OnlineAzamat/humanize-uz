@@ -1,20 +1,34 @@
+function groupThousands(value: string): string {
+  return value.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
 export function humanizeCurrency(
   amount: number,
   currency: "UZS" | "USD" = "UZS"
 ): string {
-  // Raqamlarni 3 xonadan ajratish
-  const formattedNumber = amount
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  if (!Number.isFinite(amount)) {
+    throw new RangeError(`Noto'g'ri summa: ${amount}`);
+  }
+
+  // Ko'pi bilan 2 xona kasr qismi, ortiqcha nollarsiz
+  const [integer, fraction] = Math.abs(amount)
+    .toFixed(2)
+    .replace(/\.?0+$/, "")
+    .split(".");
+  // Belgi yaxlitlashdan keyin aniqlanadi: -0.001 -> "0", "-0" emas
+  const sign = amount < 0 && (integer !== "0" || fraction) ? "-" : "";
+  // Raqamlarni 3 xonadan ajratish (faqat butun qismda)
+  const formattedNumber = groupThousands(integer) + (fraction ? "." + fraction : "");
+
+  if (currency === "USD") {
+    return `${sign}$${formattedNumber}`;
+  }
 
   if (currency === "UZS") {
     // soʻm (U+02BB) belgisi bilan
-    return `${formattedNumber} so\u02BBm`;
+    return `${sign}${formattedNumber} soʻm`;
   }
 
-  if (currency === "USD") {
-    return `$${formattedNumber}`;
-  }
-
-  return formattedNumber;
+  // Noma'lum valyuta: belgisiz son
+  return `${sign}${formattedNumber}`;
 }
