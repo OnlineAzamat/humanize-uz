@@ -93,7 +93,7 @@ npm run typecheck  # TypeScript tekshiruvi
 npm run build      # dist/ papkasini yaratish
 ```
 
-`dist/` git'da saqlanmaydi: `npm publish` paytida `prepublishOnly` skripti uni avtomatik quradi va testlarni ishga tushiradi.
+`dist/` git'da saqlanmaydi: `npm pack` va `npm publish` paytida `prepack` skripti uni avtomatik quradi, `npm publish` esa avval testlarni ishga tushiradi (`prepublishOnly`).
 
 ## Litsenziya
 MIT

@@ -1,4 +1,5 @@
 const SHORT_SCALES: [number, string][] = [
+  [1e15, "kvadrillion"],
   [1e12, "trillion"],
   [1e9, "milliard"],
   [1e6, "million"],

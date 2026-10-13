@@ -15,6 +15,7 @@ describe("humanizeNumber", () => {
   it("should roll over to the next scale", () => {
     expect(humanizeNumber(999_999)).toBe("1 million")
     expect(humanizeNumber(999_960_000)).toBe("1 milliard")
+    expect(humanizeNumber(999_999_999_999_999)).toBe("1 kvadrillion")
   });
 
   it("should handle negative numbers", () => {

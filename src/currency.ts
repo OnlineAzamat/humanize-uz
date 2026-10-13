@@ -10,12 +10,13 @@ export function humanizeCurrency(
     throw new RangeError(`Noto'g'ri summa: ${amount}`);
   }
 
-  const sign = amount < 0 ? "-" : "";
   // Ko'pi bilan 2 xona kasr qismi, ortiqcha nollarsiz
   const [integer, fraction] = Math.abs(amount)
     .toFixed(2)
     .replace(/\.?0+$/, "")
     .split(".");
+  // Belgi yaxlitlashdan keyin aniqlanadi: -0.001 -> "0", "-0" emas
+  const sign = amount < 0 && (integer !== "0" || fraction) ? "-" : "";
   // Raqamlarni 3 xonadan ajratish (faqat butun qismda)
   const formattedNumber = groupThousands(integer) + (fraction ? "." + fraction : "");
 
@@ -23,6 +24,11 @@ export function humanizeCurrency(
     return `${sign}$${formattedNumber}`;
   }
 
-  // soʻm (U+02BB) belgisi bilan
-  return `${sign}${formattedNumber} soʻm`;
+  if (currency === "UZS") {
+    // soʻm (U+02BB) belgisi bilan
+    return `${sign}${formattedNumber} soʻm`;
+  }
+
+  // Noma'lum valyuta: belgisiz son
+  return `${sign}${formattedNumber}`;
 }

@@ -20,4 +20,14 @@ describe("humanizeCurrency", () => {
     expect(humanizeCurrency(-100, "USD")).toBe("-$100");
     expect(humanizeCurrency(-1000)).toBe("-1 000 so\u02BBm");
   });
+
+  it("should drop the minus sign when the amount rounds to zero", () => {
+    expect(humanizeCurrency(-0.001, "USD")).toBe("$0");
+    expect(humanizeCurrency(-0.004)).toBe("0 so\u02BBm");
+    expect(humanizeCurrency(-0.05)).toBe("-0.05 so\u02BBm");
+  });
+
+  it("should not label unsupported currencies as UZS", () => {
+    expect(humanizeCurrency(100, "EUR" as "UZS")).toBe("100");
+  });
 });

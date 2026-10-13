@@ -19,6 +19,7 @@ describe("humanizeFileSize", () => {
     expect(humanizeFileSize(0.5)).toBe("0.5 Bayt");
     expect(humanizeFileSize(-2048)).toBe("-2 KB");
     expect(humanizeFileSize(1024 ** 10)).toBe("1048576 YB");
+    expect(humanizeFileSize(-0.001)).toBe("0 Bayt");
   });
 
   it("should reject non-finite values", () => {

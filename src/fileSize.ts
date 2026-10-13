@@ -12,10 +12,12 @@ export function humanizeFileSize(bytes: number, decimals: number = 2): string {
 
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
-  const sign = bytes < 0 ? "-" : "";
   const abs = Math.abs(bytes);
 
   const i = Math.min(Math.max(Math.floor(Math.log(abs) / Math.log(k)), 0), SIZES.length - 1);
+  const value = parseFloat((abs / Math.pow(k, i)).toFixed(dm));
+  // Belgi yaxlitlashdan keyin aniqlanadi: -0.001 -> "0 Bayt", "-0 Bayt" emas
+  const sign = bytes < 0 && value !== 0 ? "-" : "";
 
-  return sign + parseFloat((abs / Math.pow(k, i)).toFixed(dm)) + " " + SIZES[i];
+  return sign + value + " " + SIZES[i];
 }
