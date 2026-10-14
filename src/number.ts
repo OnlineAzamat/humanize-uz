@@ -1,3 +1,5 @@
+import { localize, type LocaleOptions } from "./locale.js";
+
 const SHORT_SCALES: [number, string][] = [
   [1e15, "kvadrillion"],
   [1e12, "trillion"],
@@ -10,7 +12,11 @@ const SHORT_SCALES: [number, string][] = [
  * Katta sonlarni qisqa ko'rinishda ifodalash
  * @example humanizeNumber(1500) // "1.5 ming"
  */
-export function humanizeNumber(n: number): string {
+export function humanizeNumber(n: number, options: LocaleOptions = {}): string {
+  return localize(shortNumber(n), options.locale);
+}
+
+function shortNumber(n: number): string {
   if (!Number.isFinite(n)) return String(n);
   const sign = n < 0 ? "-" : "";
   const abs = Math.abs(n);
@@ -37,13 +43,18 @@ const SCALES = ["", "ming", "million", "milliard", "trillion", "kvadrillion"];
  * Sonni so'zlar bilan ifodalash
  * @param n Son
  * @returns So'zlar bilan ifodalangan son: "yuz yigirma uch"
+ * @example numberToWords(94, { locale: "uz-Latn-2026" }) // "töqson tört"
  */
-export function numberToWords(n: number): string {
+export function numberToWords(n: number, options: LocaleOptions = {}): string {
   if (!Number.isSafeInteger(n)) {
     throw new RangeError(`numberToWords faqat butun sonlarni qabul qiladi: ${n}`);
   }
+  return localize(toWords(n), options.locale);
+}
+
+function toWords(n: number): string {
   if (n === 0) return "nol";
-  if (n < 0) return "minus " + numberToWords(Math.abs(n));
+  if (n < 0) return "minus " + toWords(Math.abs(n));
 
   let words = "";
 
@@ -88,10 +99,18 @@ export function numberToWords(n: number): string {
  * @param n Son
  * @param type 'short' (1-) yoki 'full' (1-inchi)
  */
-export function humanizeOrdinal(n: number, type: "short" | "full" = "short"): string {
+export function humanizeOrdinal(
+  n: number,
+  type: "short" | "full" = "short",
+  options: LocaleOptions = {}
+): string {
   if (type === "short") {
     return `${n}-`;
   }
+  return localize(fullOrdinal(n), options.locale);
+}
+
+function fullOrdinal(n: number): string {
 
   // O'zbek tilida tartib sonlar:
   // 0 - inchi

@@ -139,3 +139,6 @@ vite.config.ts.timestamp-*
 
 # Build natijasi (npm publish oldidan yaratiladi)
 dist
+
+# npm tokenlari
+.npmrc

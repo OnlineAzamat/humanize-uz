@@ -1,10 +1,13 @@
+import { localize, type LocaleOptions } from "./locale.js";
+
 function groupThousands(value: string): string {
   return value.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
 export function humanizeCurrency(
   amount: number,
-  currency: "UZS" | "USD" = "UZS"
+  currency: "UZS" | "USD" = "UZS",
+  options: LocaleOptions = {}
 ): string {
   if (!Number.isFinite(amount)) {
     throw new RangeError(`Noto'g'ri summa: ${amount}`);
@@ -26,7 +29,7 @@ export function humanizeCurrency(
 
   if (currency === "UZS") {
     // soʻm (U+02BB) belgisi bilan
-    return `${sign}${formattedNumber} soʻm`;
+    return `${sign}${formattedNumber} ${localize("soʻm", options.locale)}`;
   }
 
   // Noma'lum valyuta: belgisiz son

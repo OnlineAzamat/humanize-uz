@@ -1,0 +1,52 @@
+import { describe, it, expect } from "vitest";
+import {
+  humanizeNumber,
+  numberToWords,
+  humanizeOrdinal,
+  humanizeDate,
+  timeAgo,
+  humanizeTimeRange,
+  humanizeCurrency,
+  humanizeFileSize,
+  humanizeList,
+} from "../src/index";
+
+describe("locale option", () => {
+  it("should keep current Latin by default", () => {
+    expect(numberToWords(94)).toBe("toʻqson toʻrt")
+    expect(numberToWords(94, { locale: "uz-Latn" })).toBe("toʻqson toʻrt")
+  });
+
+  it("should write numbers in the 2026 alphabet and Cyrillic", () => {
+    expect(numberToWords(94, { locale: "uz-Latn-2026" })).toBe("töqson tört")
+    expect(numberToWords(94, { locale: "uz-Cyrl" })).toBe("тўқсон тўрт")
+    expect(numberToWords(-65, { locale: "uz-Latn-2026" })).toBe("minus oltmiş beş")
+    expect(humanizeNumber(1500, { locale: "uz-Cyrl" })).toBe("1.5 минг")
+    expect(humanizeOrdinal(2, "full", { locale: "uz-Latn-2026" })).toBe("2-nçi")
+    expect(humanizeOrdinal(3, "full", { locale: "uz-Cyrl" })).toBe("3-инчи")
+    expect(humanizeOrdinal(3, "short", { locale: "uz-Cyrl" })).toBe("3-")
+  });
+
+  it("should localize relative dates", () => {
+    expect(humanizeDate(new Date(), { locale: "uz-Cyrl" })).toBe("бугун")
+    expect(humanizeDate(Date.now() - 86_400_000, { locale: "uz-Latn-2026" })).toBe("keça")
+    expect(timeAgo(Date.now() - 2 * 3600 * 1000, { locale: "uz-Cyrl" })).toBe("2 соат олдин")
+    expect(timeAgo(Date.now() + 5 * 60 * 1000 + 500, { locale: "uz-Latn-2026" })).toBe("5 daqiqadan keyin")
+  });
+
+  it("should use Intl Cyrillic month names", () => {
+    const start = new Date("2025-09-10T09:00")
+    const end = new Date("2025-09-10T17:30")
+    expect(humanizeTimeRange(start, end)).toBe("10-sentabr, 2025, 09:00 - 17:30")
+    expect(humanizeTimeRange(start, end, { locale: "uz-Cyrl" })).toBe("10 сентябр, 2025, 09:00 - 17:30")
+  });
+
+  it("should localize currency, file size and list words", () => {
+    expect(humanizeCurrency(125000, "UZS", { locale: "uz-Latn-2026" })).toBe("125 000 söm")
+    expect(humanizeCurrency(125000, "UZS", { locale: "uz-Cyrl" })).toBe("125 000 сўм")
+    expect(humanizeCurrency(100, "USD", { locale: "uz-Cyrl" })).toBe("$100")
+    expect(humanizeFileSize(0, 2, { locale: "uz-Cyrl" })).toBe("0 Байт")
+    expect(humanizeFileSize(1572864, 1, { locale: "uz-Cyrl" })).toBe("1.5 МБ")
+    expect(humanizeList(["olma", "anor"], "va", { locale: "uz-Cyrl" })).toBe("olma ва anor")
+  });
+});

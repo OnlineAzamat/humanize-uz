@@ -6,3 +6,7 @@ export { pluralizeUz } from "./pluralize.js";
 export { humanizeFileSize } from "./fileSize.js";
 export { humanizePhoneNumber } from "./phoneNumber.js";
 export { humanizeList } from "./list.js";
+export { normalizeUz } from "./normalize.js";
+export { transliterate, detectScript } from "./transliterate.js";
+export type { TransliterateOptions } from "./transliterate.js";
+export type { UzLocale, LocaleOptions } from "./locale.js";
