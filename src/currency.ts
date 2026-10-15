@@ -4,6 +4,11 @@ function groupThousands(value: string): string {
   return value.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
+/**
+ * Summani valyuta bilan ifodalash (minglik guruhlash, koʻpi bilan 2 xona kasr)
+ * @example humanizeCurrency(125000) // "125 000 soʻm"
+ * @example humanizeCurrency(125000, "UZS", { locale: "uz-Cyrl" }) // "125 000 сўм"
+ */
 export function humanizeCurrency(
   amount: number,
   currency: "UZS" | "USD" = "UZS",

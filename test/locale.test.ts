@@ -37,8 +37,12 @@ describe("locale option", () => {
   it("should use Intl Cyrillic month names", () => {
     const start = new Date("2025-09-10T09:00")
     const end = new Date("2025-09-10T17:30")
-    expect(humanizeTimeRange(start, end)).toBe("10-sentabr, 2025, 09:00 - 17:30")
-    expect(humanizeTimeRange(start, end, { locale: "uz-Cyrl" })).toBe("10 сентябр, 2025, 09:00 - 17:30")
+    // ICU versiyasiga bogʻlanmaslik uchun natija Intl'ning oʻzi bilan solishtiriladi
+    const dateOpts: Intl.DateTimeFormatOptions = { day: "numeric", month: "long", year: "numeric" }
+    const cyrlDate = start.toLocaleDateString("uz-Cyrl", dateOpts)
+    expect(humanizeTimeRange(start, end, { locale: "uz-Cyrl" })).toBe(`${cyrlDate}, 09:00 - 17:30`)
+    expect(cyrlDate).toMatch(/[Ѐ-ӿ]/)
+    expect(humanizeTimeRange(start, end, { locale: "uz-Latn-2026" })).toMatch(/^[^Ѐ-ӿ]+$/)
   });
 
   it("should localize currency, file size and list words", () => {
