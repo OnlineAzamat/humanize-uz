@@ -1,0 +1,38 @@
+name: Release
+
+# v* tegi push qilinganda npm'ga trusted publishing (OIDC) orqali nashr qiladi:
+# token kerak emas, provenance avtomatik qo'shiladi.
+# Sozlash: npmjs.com -> humanize-uz -> Settings -> Trusted Publisher ->
+# GitHub Actions: OnlineAzamat / humanize-uz / release.yml
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      # Trusted publishing npm 11.5.1+ talab qiladi
+      - run: npm install -g npm@^11.5.1
+      - name: Check tag matches package.json version
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Teg $GITHUB_REF_NAME package.json versiyasiga ($version) mos emas"
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm publish

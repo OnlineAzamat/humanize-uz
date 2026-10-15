@@ -161,5 +161,14 @@ npm run build      # dist/ papkasini yaratish
 
 `dist/` git'da saqlanmaydi: `npm pack` va `npm publish` paytida `prepack` skripti uni avtomatik quradi, `npm publish` esa avval testlarni ishga tushiradi (`prepublishOnly`).
 
+### Yangi versiya chiqarish
+
+```bash
+npm version minor        # yoki patch / major: versiya commit'i va v* tegi
+git push --follow-tags   # teg GitHub Actions'dagi Release workflow'ini ishga tushiradi
+```
+
+Paket npm'ga [trusted publishing](https://docs.npmjs.com/trusted-publishers/) orqali, tokensiz va provenance bilan chiqariladi (`.github/workflows/release.yml`).
+
 ## Litsenziya
 MIT
