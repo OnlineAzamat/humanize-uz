@@ -1,7 +1,7 @@
 {
   "name": "humanize-uz",
   "version": "1.0.0",
-  "description": "Raqam va sanalarni O‘zbek tilida inson o‘qiydigan ko‘rinishga keltiruvchi kutubxona",
+  "description": "Raqam, sana va matnni oʻzbek tilida (lotin, 2026-yilgi lotin va kirill) inson oʻqiydigan koʻrinishga keltiruvchi kutubxona",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -34,7 +34,11 @@
     "localization",
     "i18n",
     "timeago",
-    "intl"
+    "intl",
+    "transliteration",
+    "cyrillic",
+    "latin",
+    "orthography"
   ],
   "author": "Azamat Yakubbaev",
   "license": "MIT",

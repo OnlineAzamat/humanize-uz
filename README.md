@@ -5,6 +5,10 @@
 
 O‘zbek tilida inson o‘qiydigan ko‘rinishda raqam, sana va boshqa ma'lumotlarni formatlovchi kutubxona.
 
+- Uch yozuvda natija: amaldagi lotin, **2026-yilgi yangi lotin alifbosi** (ö, ğ, ş, ç) va kirill
+- Yozuvlar orasida transliteratsiya va apostroflarni rasmiy belgilarga keltirish
+- Bogʻliqliklarsiz, TypeScript turlari bilan, ESM, Node.js 18+ va brauzer
+
 ## O‘rnatish
 
 ```bash
@@ -33,9 +37,6 @@ humanizeOrdinal(3, "full")     // "3-inchi"
 ```
 
 > `numberToWords` faqat butun sonlarni qabul qiladi (aks holda `RangeError`) va rasmiy `ʻ` (U+02BB) belgisidan foydalanadi: `numberToWords(10) // "oʻn"`.
-
-```js
-```
 
 ### 2. Sana va vaqt
 ```js
@@ -123,6 +124,31 @@ humanizeTimeRange(start, end, { locale: "uz-Cyrl" }) // "10 сентябр, 2025
 ### 6. `pluralizeUz` (eskirgan)
 
 O‘zbek tilida sondan keyin ot birlikda qoladi: **"5 kitob"**, "5 kitoblar" emas. Shu sababli `pluralizeUz` eskirgan (`@deprecated`) deb belgilandi va keyingi major versiyada olib tashlanadi.
+
+## 0.1.x dan yangilash
+
+1.x versiyada xatolar tuzatildi, shu sababli ayrim natijalar oʻzgardi:
+
+| Funksiya | 0.1.x | 1.x |
+|---|---|---|
+| `humanizeNumber(1000000)` | `"1.0 million"` | `"1 million"` |
+| `humanizeNumber(999999)` | `"1000.0 ming"` | `"1 million"` |
+| `timeAgo` (10 daqiqa oldin) | `"1 soat oldin"` | `"10 daqiqa oldin"` |
+| `timeAgo` (5 soniyadan kam) | `"2 soniya oldin"` | `"hozirgina"` |
+| `humanizeDate` (ertangi kun) | `"-1 kun oldin"` | `"ertaga"` |
+| `humanizeCurrency(1234.567)` | `"1 234.567 soʻm"` | `"1 234.57 soʻm"` |
+
+- Notoʻgʻri sana, `NaN` yoki `Infinity` berilsa, funksiyalar endi `RangeError` tashlaydi.
+- Paketga faqat `import { ... } from "humanize-uz"` orqali murojaat qilinadi; `humanize-uz/dist/...` kabi ichki yoʻllar `exports` sababli yopilgan.
+- Node.js 18 yoki undan yangi versiya talab qilinadi.
+
+## Versiyalar
+
+**1.1.0** — npm'dagi birinchi 1.x versiya (0.1.6 dan keyin):
+- Yangi: `normalizeUz`, `transliterate`, `detectScript`; soʻz qaytaradigan barcha funksiyalarda `{ locale }` parametri (`uz-Latn`, `uz-Latn-2026`, `uz-Cyrl`).
+- Yangi eksportlar: `numberToWords`, `humanizeOrdinal`, `humanizeTimeRange`, `humanizeFileSize`, `humanizePhoneNumber`, `humanizeList`.
+- Tuzatishlar: `timeAgo`, `humanizeDate`, `humanizeNumber`, `numberToWords`, `humanizeCurrency`, `humanizeFileSize` (yuqoridagi jadvalga qarang).
+- `pluralizeUz` eskirgan deb belgilandi.
 
 ## Ishlab chiqish
 
