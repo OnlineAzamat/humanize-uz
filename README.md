@@ -80,7 +80,47 @@ humanizePhoneNumber(998931234567)   // "+998 (93) 123-45-67"
 humanizeList(['olma', 'anor', 'behi']) // "olma, anor va behi"
 ```
 
-### 5. `pluralizeUz` (eskirgan)
+### 5. Imlo va transliteratsiya
+```js
+import { normalizeUz, transliterate, detectScript } from "humanize-uz"
+
+// Apostroflarni rasmiy belgilarga keltirish: oʻ, gʻ — ʻ (U+02BB), tutuq belgisi — ʼ (U+02BC)
+normalizeUz("O'zbekiston")  // "Oʻzbekiston"
+normalizeUz("ma'no")        // "maʼno"
+
+// Amaldagi lotin, 2026-yilgi lotin (ö, ğ, ş, ç) va kirill orasida
+transliterate("Oʻzbekiston", { to: "uz-Latn-2026" })  // "Özbekiston"
+transliterate("choʻqqi", { to: "uz-Cyrl" })           // "чўққи"
+transliterate("Шаҳар", { to: "uz-Latn" })             // "Shahar"
+transliterate("Isʼhoq", { to: "uz-Latn-2026" })       // "Ishoq"
+
+detectScript("Şahar")  // "uz-Latn-2026"
+```
+
+Kirish yozuvi avtomatik aniqlanadi. Lotin matnda ö, ğ, ş, ç boʻlmasa, u amaldagi imlo deb olinadi; boshqacha boʻlsa `from` parametrini bering: `transliterate("Ishoq", { from: "uz-Latn-2026", to: "uz-Cyrl" })`.
+
+#### `locale` parametri
+
+Soʻz qaytaradigan barcha funksiyalar oxirgi argument sifatida `{ locale }` qabul qiladi. Standart qiymat — `"uz-Latn"` (amaldagi imlo), shuning uchun eski kod oʻzgarmaydi.
+
+```js
+numberToWords(94, { locale: "uz-Latn-2026" })        // "töqson tört"
+numberToWords(94, { locale: "uz-Cyrl" })             // "тўқсон тўрт"
+humanizeOrdinal(2, "full", { locale: "uz-Latn-2026" }) // "2-nçi"
+timeAgo(date, { locale: "uz-Cyrl" })                 // "2 соат олдин"
+humanizeCurrency(125000, "UZS", { locale: "uz-Latn-2026" }) // "125 000 söm"
+humanizeTimeRange(start, end, { locale: "uz-Cyrl" }) // "10 сентябр, 2025, 09:00 - 17:30"
+```
+
+| `locale` | Yozuv |
+|---|---|
+| `uz-Latn` | Amaldagi lotin (oʻ, gʻ, sh, ch) — standart |
+| `uz-Latn-2026` | 2026-yilgi lotin (ö, ğ, ş, ç) |
+| `uz-Cyrl` | Kirill |
+
+> Lotindan kirillga oʻtkazish qoidalarga asoslangan. Ruschadan oʻzlashgan soʻzlar (`sentabr` → `сентябрь`, `ts` → `ц`) lugʻatsiz toʻgʻri tiklanmaydi.
+
+### 6. `pluralizeUz` (eskirgan)
 
 O‘zbek tilida sondan keyin ot birlikda qoladi: **"5 kitob"**, "5 kitoblar" emas. Shu sababli `pluralizeUz` eskirgan (`@deprecated`) deb belgilandi va keyingi major versiyada olib tashlanadi.
 

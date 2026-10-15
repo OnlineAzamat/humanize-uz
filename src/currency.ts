@@ -1,10 +1,18 @@
+import { localize, type LocaleOptions } from "./locale.js";
+
 function groupThousands(value: string): string {
   return value.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
+/**
+ * Summani valyuta bilan ifodalash (minglik guruhlash, koʻpi bilan 2 xona kasr)
+ * @example humanizeCurrency(125000) // "125 000 soʻm"
+ * @example humanizeCurrency(125000, "UZS", { locale: "uz-Cyrl" }) // "125 000 сўм"
+ */
 export function humanizeCurrency(
   amount: number,
-  currency: "UZS" | "USD" = "UZS"
+  currency: "UZS" | "USD" = "UZS",
+  options: LocaleOptions = {}
 ): string {
   if (!Number.isFinite(amount)) {
     throw new RangeError(`Noto'g'ri summa: ${amount}`);
@@ -26,7 +34,7 @@ export function humanizeCurrency(
 
   if (currency === "UZS") {
     // soʻm (U+02BB) belgisi bilan
-    return `${sign}${formattedNumber} soʻm`;
+    return `${sign}${formattedNumber} ${localize("soʻm", options.locale)}`;
   }
 
   // Noma'lum valyuta: belgisiz son
