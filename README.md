@@ -217,7 +217,7 @@ npm version minor        # yoki patch / major: versiya commit'i va v* tegi
 git push --follow-tags   # teg GitHub Actions'dagi Release workflow'ini ishga tushiradi
 ```
 
-Paket npm'ga [trusted publishing](https://docs.npmjs.com/trusted-publishers/) orqali, tokensiz va provenance bilan chiqariladi (`.github/workflows/release.yml`).
+Paket npm'ga [trusted publishing](https://docs.npmjs.com/trusted-publishers/) orqali, tokensiz va provenance bilan chiqariladi (`.github/workflows/release.yml`). Nashrdan keyin shu teg uchun GitHub Release avtomatik yaratiladi; izohlar teglar orasidagi PR'lardan tuziladi.
 
 ## Litsenziya
 MIT
