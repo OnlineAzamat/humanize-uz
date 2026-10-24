@@ -1,4 +1,5 @@
-import { formatIntl, localize, type LocaleOptions } from "./locale.js";
+import { formatIntl, isKaa, localize, type Locale, type LocaleOptions } from "./locale.js";
+import { wordsFor, type LanguageWords, type TimeUnit } from "./words.js";
 
 const DAY_MS = 86_400_000;
 
@@ -14,25 +15,35 @@ function toDate(input: string | number | Date): Date {
   return date;
 }
 
+const pad2 = (n: number) => String(n).padStart(2, "0");
+
+// Intl'da qoraqalpoq tili yoʻq: sana "dd.mm.yyyy" koʻrinishida yoziladi
+function formatShortDate(date: Date, locale: Locale | undefined): string {
+  if (isKaa(locale)) {
+    return `${pad2(date.getDate())}.${pad2(date.getMonth() + 1)}.${date.getFullYear()}`;
+  }
+  return formatIntl(locale, (intlLocale) => date.toLocaleDateString(intlLocale));
+}
+
 /**
  * Sanani kalendar kunlari bo'yicha ifodalash
  * @example humanizeDate(new Date()) // "bugun"
  */
 export function humanizeDate(input: string | number | Date, options: LocaleOptions = {}): string {
   const date = toDate(input);
-  const relative = relativeDay(date);
+  const relative = relativeDay(date, wordsFor(options.locale));
   if (relative !== null) return localize(relative, options.locale);
-  return formatIntl(options.locale, (locale) => date.toLocaleDateString(locale));
+  return formatShortDate(date, options.locale);
 }
 
-function relativeDay(date: Date): string | null {
+function relativeDay(date: Date, lang: LanguageWords): string | null {
   const diff = Math.round((startOfDay(new Date()) - startOfDay(date)) / DAY_MS);
 
-  if (diff === 0) return "bugun";
-  if (diff === 1) return "kecha";
-  if (diff === -1) return "ertaga";
-  if (diff > 0 && diff < 7) return `${diff} kun oldin`;
-  if (diff < 0 && diff > -7) return `${-diff} kundan keyin`;
+  if (diff === 0) return lang.today;
+  if (diff === 1) return lang.yesterday;
+  if (diff === -1) return lang.tomorrow;
+  if (diff > 0 && diff < 7) return lang.past(diff, "day");
+  if (diff < 0 && diff > -7) return lang.future(-diff, "day");
   return null;
 }
 
@@ -42,12 +53,12 @@ function relativeDay(date: Date): string | null {
  */
 export function timeAgo(input: string | number | Date, options: LocaleOptions = {}): string {
   const date = toDate(input);
-  const relative = relativeTime(date);
+  const relative = relativeTime(date, wordsFor(options.locale));
   if (relative !== null) return localize(relative, options.locale);
-  return formatIntl(options.locale, (locale) => date.toLocaleDateString(locale));
+  return formatShortDate(date, options.locale);
 }
 
-function relativeTime(date: Date): string | null {
+function relativeTime(date: Date, lang: LanguageWords): string | null {
   const diffMs = Date.now() - date.getTime();
   const future = diffMs < 0;
   const seconds = Math.floor(Math.abs(diffMs) / 1000);
@@ -55,15 +66,15 @@ function relativeTime(date: Date): string | null {
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
 
-  if (seconds < 5) return "hozirgina";
+  if (seconds < 5) return lang.now;
 
   let amount: number;
-  let unit: string;
-  if (seconds < 60) [amount, unit] = [seconds, "soniya"];
-  else if (minutes < 60) [amount, unit] = [minutes, "daqiqa"];
-  else if (hours < 24) [amount, unit] = [hours, "soat"];
-  else if (days < 7) [amount, unit] = [days, "kun"];
+  let unit: TimeUnit;
+  if (seconds < 60) [amount, unit] = [seconds, "second"];
+  else if (minutes < 60) [amount, unit] = [minutes, "minute"];
+  else if (hours < 24) [amount, unit] = [hours, "hour"];
+  else if (days < 7) [amount, unit] = [days, "day"];
   else return null;
 
-  return future ? `${amount} ${unit}dan keyin` : `${amount} ${unit} oldin`;
+  return future ? lang.future(amount, unit) : lang.past(amount, unit);
 }

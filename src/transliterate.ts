@@ -1,5 +1,6 @@
-import type { UzLocale } from "./locale.js";
+import type { Locale, UzLocale } from "./locale.js";
 import { normalizeUz } from "./normalize.js";
+import { transliterateKaa } from "./kaa.js";
 
 // Barcha oʻtkazishlar 2026-yilgi lotin imlosi orqali bajariladi: unda har bir
 // tovush bitta harf (ş, ç, ö, ğ), "sh" esa doim ikki alohida harf (Ishoq).
@@ -122,18 +123,27 @@ export function detectScript(text: string): UzLocale {
 
 export interface TransliterateOptions {
   /** Natija yozuvi */
-  to: UzLocale;
+  to: Locale;
   /** Lotin qismlar imlosi; berilmasa matndan aniqlanadi. Kirill harflari doim kirill deb olinadi. */
-  from?: UzLocale;
+  from?: Locale;
 }
+
+const isKaaLocale = (locale: Locale | undefined) => locale === "kaa-Latn" || locale === "kaa-Cyrl";
 
 /**
  * Matnni amaldagi lotin, 2026-yilgi lotin va kirill yozuvlari orasida oʻtkazish
  * @example transliterate("Oʻzbekiston", { to: "uz-Latn-2026" }) // "Özbekiston"
  * @example transliterate("Шаҳар", { to: "uz-Latn" })            // "Shahar"
  * @example transliterate("choʻqqi", { to: "uz-Cyrl" })          // "чўққи"
+ * @example transliterate("Қарақалпақстан", { to: "kaa-Latn" })  // "Qaraqalpaqstan"
  */
 export function transliterate(text: string, options: TransliterateOptions): string {
+  if (isKaaLocale(options.to) || isKaaLocale(options.from)) {
+    if (!isKaaLocale(options.to) || (options.from && !isKaaLocale(options.from))) {
+      throw new RangeError("Oʻzbek va qoraqalpoq yozuvlari orasida transliteratsiya qilinmaydi");
+    }
+    return transliterateKaa(text, options.to as "kaa-Latn" | "kaa-Cyrl");
+  }
   const normalized = normalizeUz(text);
   const latinFrom =
     options.from && options.from !== "uz-Cyrl"

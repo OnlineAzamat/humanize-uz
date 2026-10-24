@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { humanizeNumber, humanizeOrdinal, numberToWords } from "../src/number";
+import { humanizeNumber, humanizeOrdinal, numberToWords, ordinalToWords } from "../src/number";
 
 describe("humanizeNumber", () => {
   it("should format 1000000 as '1 million'", () => {
@@ -74,5 +74,30 @@ describe("numberToWords", () => {
     expect(() => numberToWords(1.5)).toThrow(RangeError);
     expect(() => numberToWords(NaN)).toThrow(RangeError);
     expect(() => numberToWords(Infinity)).toThrow(RangeError);
+  });
+});
+
+describe("ordinalToWords", () => {
+  it("should add -inchi after consonants and -nchi after vowels", () => {
+    expect(ordinalToWords(1)).toBe("birinchi");
+    expect(ordinalToWords(2)).toBe("ikkinchi");
+    expect(ordinalToWords(3)).toBe("uchinchi");
+    expect(ordinalToWords(6)).toBe("oltinchi");
+    expect(ordinalToWords(10)).toBe("o\u02BBninchi");
+    expect(ordinalToWords(20)).toBe("yigirmanchi");
+    expect(ordinalToWords(22)).toBe("yigirma ikkinchi");
+    expect(ordinalToWords(100)).toBe("yuzinchi");
+    expect(ordinalToWords(0)).toBe("nolinchi");
+  });
+
+  it("should follow the locale", () => {
+    expect(ordinalToWords(4, { locale: "uz-Latn-2026" })).toBe("törtinçi");
+    expect(ordinalToWords(3, { locale: "uz-Latn-2026" })).toBe("uçinçi");
+    expect(ordinalToWords(22, { locale: "uz-Cyrl" })).toBe("йигирма иккинчи");
+  });
+
+  it("should reject negative and non-integer numbers", () => {
+    expect(() => ordinalToWords(-1)).toThrow(RangeError);
+    expect(() => ordinalToWords(1.5)).toThrow(RangeError);
   });
 });

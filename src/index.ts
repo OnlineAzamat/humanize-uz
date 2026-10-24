@@ -1,4 +1,6 @@
-export { humanizeNumber, humanizeOrdinal, numberToWords } from "./number.js";
+export { humanizeNumber, humanizeOrdinal, numberToWords, ordinalToWords } from "./number.js";
+export { amountToWords } from "./amount.js";
+export type { AmountCurrency, AmountToWordsOptions } from "./amount.js";
 export { humanizeDate, timeAgo } from "./date.js";
 export { humanizeTimeRange } from "./timeRange.js";
 export { humanizeCurrency } from "./currency.js";
@@ -9,4 +11,5 @@ export { humanizeList } from "./list.js";
 export { normalizeUz } from "./normalize.js";
 export { transliterate, detectScript } from "./transliterate.js";
 export type { TransliterateOptions } from "./transliterate.js";
-export type { UzLocale, LocaleOptions } from "./locale.js";
+export { normalizeKaa, toUpperKaa, toLowerKaa } from "./kaa.js";
+export type { UzLocale, KaaLocale, Locale, LocaleOptions } from "./locale.js";
