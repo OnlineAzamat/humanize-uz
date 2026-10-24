@@ -21,7 +21,7 @@ npm install humanize-uz
 
 ### 1. Sonlarni formatlash
 ```js
-import { humanizeNumber, numberToWords, humanizeOrdinal } from "humanize-uz"
+import { humanizeNumber, numberToWords, humanizeOrdinal, ordinalToWords } from "humanize-uz"
 
 // Qisqa ko'rinishda
 humanizeNumber(1250000) // "1.3 million"
@@ -147,7 +147,7 @@ humanizeTimeRange(start, end, { locale: "uz-Cyrl" }) // "10 сентябр, 2025
 Soʻz qaytaradigan barcha funksiyalar `kaa-Latn` va `kaa-Cyrl` ni qabul qiladi. Brauzer va Node.js'dagi `Intl` qoraqalpoq tilini bilmaydi, shuning uchun soʻzlar va oy nomlari kutubxonaning oʻzida saqlanadi.
 
 ```js
-import { numberToWords, ordinalToWords, timeAgo, transliterate, toUpperKaa, normalizeKaa } from "humanize-uz"
+import { numberToWords, ordinalToWords, amountToWords, timeAgo, transliterate, toUpperKaa, normalizeKaa } from "humanize-uz"
 
 numberToWords(1994, { locale: "kaa-Latn" })  // "bir mıń toǵız júz toqsan tórt"
 numberToWords(1994, { locale: "kaa-Cyrl" })  // "бир мың тоғыз жүз тоқсан төрт"

@@ -151,7 +151,10 @@ export function lastNumberWord(n: number, lang: LanguageWords): string {
   const abs = Math.abs(Math.trunc(n));
   if (abs === 0) return lang.zero;
   const group = abs % 1000;
-  // 1000, 2 000 000 kabi: oxirgi soʻz daraja nomi ("ming", "million"...)
+  // 1000, 2 000 000 kabi: oxirgi soʻz daraja nomi. Barcha daraja nomlari bir xil
+  // qoʻshimcha oladi (minginchi, millioninchi), shuning uchun "ming" qaytariladi.
+  // integerToWords ishlatilmaydi: humanizeOrdinal xavfsiz butun sondan katta
+  // sonlarni ham qabul qiladi (1e20), ular uchun daraja nomi yoʻq.
   if (group === 0) return lang.scales[1];
   return integerToWords(group, lang).split(" ").pop() as string;
 }
