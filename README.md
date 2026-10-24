@@ -6,6 +6,8 @@
 O‘zbek tilida inson o‘qiydigan ko‘rinishda raqam, sana va boshqa ma'lumotlarni formatlovchi kutubxona.
 
 - Uch yozuvda natija: amaldagi lotin, **2026-yilgi yangi lotin alifbosi** (ö, ğ, ş, ç) va kirill
+- **Qoraqalpoq tili**: 2016-yilgi lotin va kirill yozuvi
+- Summani soʻz bilan yozish (shartnoma va toʻlov hujjatlari uchun)
 - Yozuvlar orasida transliteratsiya va apostroflarni rasmiy belgilarga keltirish
 - Bogʻliqliklarsiz, TypeScript turlari bilan, ESM, Node.js 18+ va brauzer
 
@@ -19,7 +21,7 @@ npm install humanize-uz
 
 ### 1. Sonlarni formatlash
 ```js
-import { humanizeNumber, numberToWords, humanizeOrdinal } from "humanize-uz"
+import { humanizeNumber, numberToWords, humanizeOrdinal, ordinalToWords } from "humanize-uz"
 
 // Qisqa ko'rinishda
 humanizeNumber(1250000) // "1.3 million"
@@ -34,6 +36,10 @@ numberToWords(1500)     // "bir ming besh yuz"
 humanizeOrdinal(1)             // "1-"
 humanizeOrdinal(2, "full")     // "2-nchi"
 humanizeOrdinal(3, "full")     // "3-inchi"
+
+// Tartib sonni so'z bilan
+ordinalToWords(1)              // "birinchi"
+ordinalToWords(22)             // "yigirma ikkinchi"
 ```
 
 > `numberToWords` faqat butun sonlarni qabul qiladi (aks holda `RangeError`) va rasmiy `ʻ` (U+02BB) belgisidan foydalanadi: `numberToWords(10) // "oʻn"`.
@@ -69,7 +75,20 @@ humanizeFileSize(1024)          // "1 KB"
 humanizeFileSize(1572864, 1)    // "1.5 MB"
 ```
 
-### 4. Telefon va Ro'yxatlar
+### 4. Summani so'z bilan yozish
+```js
+import { amountToWords } from "humanize-uz"
+
+amountToWords(1250000.5)                  // "bir million ikki yuz ellik ming soʻm 50 tiyin"
+amountToWords(1250000)                    // "bir million ikki yuz ellik ming soʻm"
+amountToWords(100, { currency: "USD" })   // "yuz dollar"
+amountToWords(12.05, { fraction: "words", capitalize: true }) // "Oʻn ikki soʻm besh tiyin"
+amountToWords(12.05, { locale: "uz-Cyrl" })                   // "ўн икки сўм 05 тийин"
+```
+
+Valyutalar: `UZS` (standart), `USD`, `EUR`. Kasr qismi 2 xonagacha yaxlitlanadi va nol boʻlsa yozilmaydi.
+
+### 5. Telefon va Ro'yxatlar
 ```js
 import { humanizePhoneNumber, humanizeList } from "humanize-uz"
 
@@ -81,7 +100,7 @@ humanizePhoneNumber(998931234567)   // "+998 (93) 123-45-67"
 humanizeList(['olma', 'anor', 'behi']) // "olma, anor va behi"
 ```
 
-### 5. Imlo va transliteratsiya
+### 6. Imlo va transliteratsiya
 ```js
 import { normalizeUz, transliterate, detectScript } from "humanize-uz"
 
@@ -118,10 +137,35 @@ humanizeTimeRange(start, end, { locale: "uz-Cyrl" }) // "10 сентябр, 2025
 | `uz-Latn` | Amaldagi lotin (oʻ, gʻ, sh, ch) — standart |
 | `uz-Latn-2026` | 2026-yilgi lotin (ö, ğ, ş, ç) |
 | `uz-Cyrl` | Kirill |
+| `kaa-Latn` | Qoraqalpoq, 2016-yilgi lotin |
+| `kaa-Cyrl` | Qoraqalpoq, kirill |
 
 > Lotindan kirillga oʻtkazish qoidalarga asoslangan. Ruschadan oʻzlashgan soʻzlar (`sentabr` → `сентябрь`, `ts` → `ц`) lugʻatsiz toʻgʻri tiklanmaydi.
 
-### 6. `pluralizeUz` (eskirgan)
+### 7. Qoraqalpoq tili
+
+Soʻz qaytaradigan barcha funksiyalar `kaa-Latn` va `kaa-Cyrl` ni qabul qiladi. Brauzer va Node.js'dagi `Intl` qoraqalpoq tilini bilmaydi, shuning uchun soʻzlar va oy nomlari kutubxonaning oʻzida saqlanadi.
+
+```js
+import { numberToWords, ordinalToWords, amountToWords, timeAgo, transliterate, toUpperKaa, normalizeKaa } from "humanize-uz"
+
+numberToWords(1994, { locale: "kaa-Latn" })  // "bir mıń toǵız júz toqsan tórt"
+numberToWords(1994, { locale: "kaa-Cyrl" })  // "бир мың тоғыз жүз тоқсан төрт"
+ordinalToWords(6, { locale: "kaa-Latn" })    // "altınshı"
+timeAgo(date, { locale: "kaa-Latn" })        // "2 saat burın"
+amountToWords(1250000.5, { locale: "kaa-Latn" }) // "bir million eki júz eliw mıń swm 50 tıyın"
+
+transliterate("Қарақалпақстан", { to: "kaa-Latn" })  // "Qaraqalpaqstan"
+transliterate("Nókis", { to: "kaa-Cyrl" })           // "Нөкис"
+
+// Í ning kichigi nuqtasiz ı: standart "altı".toUpperCase() "ALTI" beradi
+toUpperKaa("altı")       // "ALTÍ"
+normalizeKaa("No'kis")   // "Nókis" (2016-yilgacha boʻlgan apostrofli yozuv)
+```
+
+> Qoraqalpoqcha soʻzlar ona tilida soʻzlashuvchi tomonidan tekshirilgan. Xato topsangiz, [issue oching](https://github.com/OnlineAzamat/humanize-uz/issues).
+
+### 8. `pluralizeUz` (eskirgan)
 
 O‘zbek tilida sondan keyin ot birlikda qoladi: **"5 kitob"**, "5 kitoblar" emas. Shu sababli `pluralizeUz` eskirgan (`@deprecated`) deb belgilandi va keyingi major versiyada olib tashlanadi.
 
@@ -143,6 +187,11 @@ O‘zbek tilida sondan keyin ot birlikda qoladi: **"5 kitob"**, "5 kitoblar" ema
 - Node.js 18 yoki undan yangi versiya talab qilinadi.
 
 ## Versiyalar
+
+**Keyingi versiya** (hali chiqarilmagan):
+- Yangi: `amountToWords` (summani soʻz bilan), `ordinalToWords` (tartib sonni soʻz bilan).
+- Qoraqalpoq tili: `kaa-Latn`, `kaa-Cyrl` locale'lari, `normalizeKaa`, `toUpperKaa`, `toLowerKaa`, `transliterate` orqali lotin ↔ kirill.
+- `humanizeList` ning bogʻlovchisi endi ixtiyoriy: berilmasa tilga qarab `va` yoki `hám`.
 
 **1.1.0** — npm'dagi birinchi 1.x versiya (0.1.6 dan keyin):
 - Yangi: `normalizeUz`, `transliterate`, `detectScript`; soʻz qaytaradigan barcha funksiyalarda `{ locale }` parametri (`uz-Latn`, `uz-Latn-2026`, `uz-Cyrl`).

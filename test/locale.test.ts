@@ -9,6 +9,7 @@ import {
   humanizeCurrency,
   humanizeFileSize,
   humanizeList,
+  ordinalToWords,
 } from "../src/index";
 
 describe("locale option", () => {
@@ -52,5 +53,46 @@ describe("locale option", () => {
     expect(humanizeFileSize(0, 2, { locale: "uz-Cyrl" })).toBe("0 Байт")
     expect(humanizeFileSize(1572864, 1, { locale: "uz-Cyrl" })).toBe("1.5 МБ")
     expect(humanizeList(["olma", "anor"], "va", { locale: "uz-Cyrl" })).toBe("olma ва anor")
+  });
+});
+
+describe("Karakalpak locale", () => {
+  it("should write numbers and ordinals", () => {
+    expect(numberToWords(1994, { locale: "kaa-Latn" })).toBe("bir mıń toǵız júz toqsan tórt")
+    expect(numberToWords(1994, { locale: "kaa-Cyrl" })).toBe("бир мың тоғыз жүз тоқсан төрт")
+    expect(humanizeNumber(1500, { locale: "kaa-Latn" })).toBe("1.5 mıń")
+    expect(humanizeNumber(2_500_000, { locale: "kaa-Cyrl" })).toBe("2.5 миллион")
+    expect(ordinalToWords(2, { locale: "kaa-Latn" })).toBe("ekinshi")
+    expect(ordinalToWords(6, { locale: "kaa-Latn" })).toBe("altınshı")
+    expect(ordinalToWords(9, { locale: "kaa-Latn" })).toBe("toǵızınshı")
+    expect(ordinalToWords(100, { locale: "kaa-Latn" })).toBe("júzinshi")
+    expect(ordinalToWords(6, { locale: "kaa-Cyrl" })).toBe("алтыншы")
+    expect(humanizeOrdinal(2, "full", { locale: "kaa-Latn" })).toBe("2-nshi")
+    expect(humanizeOrdinal(6, "full", { locale: "kaa-Latn" })).toBe("6-nshı")
+    expect(humanizeOrdinal(1, "full", { locale: "kaa-Latn" })).toBe("1-inshi")
+  });
+
+  it("should write relative dates and time", () => {
+    expect(humanizeDate(new Date(), { locale: "kaa-Latn" })).toBe("búgin")
+    expect(humanizeDate(Date.now() - 86_400_000, { locale: "kaa-Cyrl" })).toBe("кеше")
+    expect(timeAgo(Date.now() - 2 * 3600 * 1000, { locale: "kaa-Latn" })).toBe("2 saat burın")
+    expect(timeAgo(Date.now() - 2 * 3600 * 1000, { locale: "kaa-Cyrl" })).toBe("2 саат бурын")
+    expect(timeAgo(Date.now() + 5 * 60 * 1000 + 500, { locale: "kaa-Latn" })).toBe("5 minuttan keyin")
+  });
+
+  it("should format dates without Intl", () => {
+    const old = new Date(2025, 7, 10, 12)
+    expect(humanizeDate(old, { locale: "kaa-Latn" })).toBe("10.08.2025")
+    const start = new Date("2025-08-10T09:00")
+    expect(humanizeTimeRange(start, new Date("2025-08-10T17:30"), { locale: "kaa-Latn" })).toBe("10-avgust, 2025, 09:00 - 17:30")
+    expect(humanizeTimeRange(start, new Date("2025-08-11T17:30"), { locale: "kaa-Cyrl" })).toBe("10-август, 2025, 09:00 - 11-август, 2025, 17:30")
+  });
+
+  it("should localize currency, file size and list words", () => {
+    expect(humanizeCurrency(125000, "UZS", { locale: "kaa-Latn" })).toBe("125 000 swm")
+    expect(humanizeCurrency(125000, "UZS", { locale: "kaa-Cyrl" })).toBe("125 000 сўм")
+    expect(humanizeFileSize(1572864, 1, { locale: "kaa-Cyrl" })).toBe("1.5 МБ")
+    expect(humanizeList(["alma", "anar", "júzim"], undefined, { locale: "kaa-Latn" })).toBe("alma, anar hám júzim")
+    expect(humanizeList(["alma", "anar"], undefined, { locale: "kaa-Cyrl" })).toBe("alma ҳәм anar")
   });
 });

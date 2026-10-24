@@ -1,4 +1,5 @@
 import { localize, type LocaleOptions } from "./locale.js";
+import { wordsFor } from "./words.js";
 
 function groupThousands(value: string): string {
   return value.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
@@ -33,8 +34,9 @@ export function humanizeCurrency(
   }
 
   if (currency === "UZS") {
-    // soʻm (U+02BB) belgisi bilan
-    return `${sign}${formattedNumber} ${localize("soʻm", options.locale)}`;
+    // soʻm (U+02BB) belgisi bilan; qoraqalpoqcha "swm"
+    const som = wordsFor(options.locale).currency.UZS[0];
+    return `${sign}${formattedNumber} ${localize(som, options.locale)}`;
   }
 
   // Noma'lum valyuta: belgisiz son
