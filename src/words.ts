@@ -64,8 +64,7 @@ export const uz: LanguageWords = {
   byte: "Bayt",
 };
 
-// TAJRIBAVIY: qoraqalpoqcha soʻzlar ona tilida soʻzlashuvchi tomonidan hali tasdiqlanmagan.
-// Tekshirilishi kerak boʻlgan joylar README'dagi "Qoraqalpoq tili" boʻlimida sanab oʻtilgan.
+// Qoraqalpoqcha soʻzlar ona tilida soʻzlashuvchi tomonidan tekshirilgan.
 
 const KAA_UNITS: Record<TimeUnit, [word: string, ablative: string]> = {
   second: ["sekund", "sekundtan"],

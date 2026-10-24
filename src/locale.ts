@@ -12,7 +12,7 @@ export type UzLocale = "uz-Latn" | "uz-Latn-2026" | "uz-Cyrl";
 export type { KaaLocale };
 
 /**
- * Til va yozuv: oʻzbek (`uz-*`) yoki qoraqalpoq (`kaa-Latn`, `kaa-Cyrl`, tajribaviy)
+ * Til va yozuv: oʻzbek (`uz-*`) yoki qoraqalpoq (`kaa-Latn`, `kaa-Cyrl`)
  */
 export type Locale = UzLocale | KaaLocale;
 

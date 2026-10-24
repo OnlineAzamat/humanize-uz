@@ -6,7 +6,7 @@
 O‘zbek tilida inson o‘qiydigan ko‘rinishda raqam, sana va boshqa ma'lumotlarni formatlovchi kutubxona.
 
 - Uch yozuvda natija: amaldagi lotin, **2026-yilgi yangi lotin alifbosi** (ö, ğ, ş, ç) va kirill
-- **Qoraqalpoq tili** (tajribaviy): 2016-yilgi lotin va kirill yozuvi
+- **Qoraqalpoq tili**: 2016-yilgi lotin va kirill yozuvi
 - Summani soʻz bilan yozish (shartnoma va toʻlov hujjatlari uchun)
 - Yozuvlar orasida transliteratsiya va apostroflarni rasmiy belgilarga keltirish
 - Bogʻliqliklarsiz, TypeScript turlari bilan, ESM, Node.js 18+ va brauzer
@@ -137,12 +137,12 @@ humanizeTimeRange(start, end, { locale: "uz-Cyrl" }) // "10 сентябр, 2025
 | `uz-Latn` | Amaldagi lotin (oʻ, gʻ, sh, ch) — standart |
 | `uz-Latn-2026` | 2026-yilgi lotin (ö, ğ, ş, ç) |
 | `uz-Cyrl` | Kirill |
-| `kaa-Latn` | Qoraqalpoq, 2016-yilgi lotin (tajribaviy) |
-| `kaa-Cyrl` | Qoraqalpoq, kirill (tajribaviy) |
+| `kaa-Latn` | Qoraqalpoq, 2016-yilgi lotin |
+| `kaa-Cyrl` | Qoraqalpoq, kirill |
 
 > Lotindan kirillga oʻtkazish qoidalarga asoslangan. Ruschadan oʻzlashgan soʻzlar (`sentabr` → `сентябрь`, `ts` → `ц`) lugʻatsiz toʻgʻri tiklanmaydi.
 
-### 7. Qoraqalpoq tili (tajribaviy)
+### 7. Qoraqalpoq tili
 
 Soʻz qaytaradigan barcha funksiyalar `kaa-Latn` va `kaa-Cyrl` ni qabul qiladi. Brauzer va Node.js'dagi `Intl` qoraqalpoq tilini bilmaydi, shuning uchun soʻzlar va oy nomlari kutubxonaning oʻzida saqlanadi.
 
@@ -163,7 +163,7 @@ toUpperKaa("altı")       // "ALTÍ"
 normalizeKaa("No'kis")   // "Nókis" (2016-yilgacha boʻlgan apostrofli yozuv)
 ```
 
-> **Tajribaviy.** Qoraqalpoqcha soʻzlar ona tilida soʻzlashuvchi tomonidan hali tasdiqlanmagan. Ayniqsa quyidagilarni tekshirish kerak: tartib sonlar (`jigirmanshı`, `qırıqınshı`), vaqt soʻzlari (`burın`, `minuttan keyin`, `házir`), valyuta (`swm`, `tıyın`, `cent`) va `hám`. Xato topsangiz, [issue oching](https://github.com/OnlineAzamat/humanize-uz/issues).
+> Qoraqalpoqcha soʻzlar ona tilida soʻzlashuvchi tomonidan tekshirilgan. Xato topsangiz, [issue oching](https://github.com/OnlineAzamat/humanize-uz/issues).
 
 ### 8. `pluralizeUz` (eskirgan)
 
@@ -190,7 +190,7 @@ O‘zbek tilida sondan keyin ot birlikda qoladi: **"5 kitob"**, "5 kitoblar" ema
 
 **Keyingi versiya** (hali chiqarilmagan):
 - Yangi: `amountToWords` (summani soʻz bilan), `ordinalToWords` (tartib sonni soʻz bilan).
-- Qoraqalpoq tili (tajribaviy): `kaa-Latn`, `kaa-Cyrl` locale'lari, `normalizeKaa`, `toUpperKaa`, `toLowerKaa`, `transliterate` orqali lotin ↔ kirill.
+- Qoraqalpoq tili: `kaa-Latn`, `kaa-Cyrl` locale'lari, `normalizeKaa`, `toUpperKaa`, `toLowerKaa`, `transliterate` orqali lotin ↔ kirill.
 - `humanizeList` ning bogʻlovchisi endi ixtiyoriy: berilmasa tilga qarab `va` yoki `hám`.
 
 **1.1.0** — npm'dagi birinchi 1.x versiya (0.1.6 dan keyin):

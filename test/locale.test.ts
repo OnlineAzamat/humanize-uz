@@ -56,7 +56,7 @@ describe("locale option", () => {
   });
 });
 
-describe("Karakalpak locale (experimental)", () => {
+describe("Karakalpak locale", () => {
   it("should write numbers and ordinals", () => {
     expect(numberToWords(1994, { locale: "kaa-Latn" })).toBe("bir mıń toǵız júz toqsan tórt")
     expect(numberToWords(1994, { locale: "kaa-Cyrl" })).toBe("бир мың тоғыз жүз тоқсан төрт")
