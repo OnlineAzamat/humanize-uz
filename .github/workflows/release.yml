@@ -1,6 +1,7 @@
 name: Release
 
-# v* tegi push qilinganda npm'ga trusted publishing (OIDC) orqali nashr qiladi:
+# v* tegi push qilinganda npm'ga trusted publishing (OIDC) orqali nashr qiladi
+# va shu teg uchun GitHub Release yaratadi:
 # token kerak emas, provenance avtomatik qo'shiladi.
 # Sozlash: npmjs.com -> humanize-uz -> Settings -> Trusted Publisher ->
 # GitHub Actions: OnlineAzamat / humanize-uz / release.yml
@@ -36,3 +37,23 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm publish
+
+  # Release alohida job'da: yozish ruxsati faqat gh'ga beriladi, npm ci va
+  # paket skriptlari ishlaydigan publish job'i faqat o'qish ruxsatida qoladi.
+  github-release:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        # Qayta ishga tushirilganda release allaqachon bo'lsa, o'tkazib yuboriladi
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release $GITHUB_REF_NAME allaqachon bor"
+          else
+            gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --title "$GITHUB_REF_NAME"
+          fi
