@@ -90,14 +90,65 @@ Valyutalar: `UZS` (standart), `USD`, `EUR`. Kasr qismi 2 xonagacha yaxlitlanadi 
 
 ### 5. Telefon va Ro'yxatlar
 ```js
-import { humanizePhoneNumber, humanizeList } from "humanize-uz"
+import { humanizePhoneNumber, getPhoneOperator, isValidUzPhone, humanizeList } from "humanize-uz"
 
 // Telefon raqami
 humanizePhoneNumber("901234567")    // "+998 (90) 123-45-67"
 humanizePhoneNumber(998931234567)   // "+998 (93) 123-45-67"
 
+// Mobil operator va tekshirish
+getPhoneOperator("+998 90 123 45 67")   // "Beeline"
+getPhoneOperator("712345678")           // null (shahar raqami)
+isValidUzPhone("+998 (93) 123-45-67")   // true
+
 // Ro'yxatni formatlash
 humanizeList(['olma', 'anor', 'behi']) // "olma, anor va behi"
+```
+
+| Kod | Operator |
+|---|---|
+| 90, 91 | Beeline |
+| 93, 94, 50 | Ucell |
+| 88, 97 | Mobiuz |
+| 95, 99, 77 | Uzmobile |
+| 33 | Humans |
+| 98 | Perfectum |
+| 20 | OQ |
+
+> Kod raqam qaysi operatorga ajratilganini bildiradi. Raqam boshqa operatorga koʻchirilgan boʻlsa, natija eski operatorni koʻrsatadi.
+
+### Qoʻshimchalar
+```js
+import { addSuffix } from "humanize-uz"
+
+// Imlo qoidasi: k, g dan keyin -ka; q, gʻ dan keyin -qa
+addSuffix("maktab", "ga")    // "maktabga"
+addSuffix("bank", "ga")      // "bankka"
+addSuffix("qishloq", "ga")   // "qishloqqa"
+addSuffix("tong", "ga")      // "tongga" (ng — bitta tovush)
+
+// Songa — chiziqcha bilan, sonning oʻqilishiga qarab
+addSuffix(5, "ga")           // "5-ga"
+addSuffix(50, "ga")          // "50-ka" (ellik)
+addSuffix(40, "ga")          // "40-qa" (qirq)
+addSuffix(2026, "da")        // "2026-da"
+
+addSuffix("банк", "ga", { locale: "uz-Cyrl" })  // "банкка"
+```
+
+### Saralash va qidiruv
+```js
+import { compareUz, searchKey } from "humanize-uz"
+
+// Oʻzbek alifbosi tartibi: ... x y z oʻ gʻ sh ch
+["choy", "shahar", "oʻrik", "olma"].sort(compareUz)  // ["olma", "oʻrik", "shahar", "choy"]
+
+// Har xil imlo va yozuv bitta kalitga keladi
+searchKey("O'zbekiston") === searchKey("Ўзбекистон")   // true
+searchKey("Özbekiston")                                 // "özbekiston"
+
+// Yumshoq qidiruv: apostrof va diakritiksiz yozilgan soʻrov
+searchKey("ozbekiston", { loose: true }) === searchKey("Oʻzbekiston", { loose: true })  // true
 ```
 
 ### 6. Imlo va transliteratsiya
@@ -190,6 +241,7 @@ O‘zbek tilida sondan keyin ot birlikda qoladi: **"5 kitob"**, "5 kitoblar" ema
 
 **Keyingi versiya** (hali chiqarilmagan):
 - Yangi: `amountToWords` (summani soʻz bilan), `ordinalToWords` (tartib sonni soʻz bilan).
+- Yangi: `addSuffix` (-ga/-ka/-qa qoidasi), `compareUz` va `searchKey` (saralash va qidiruv), `getPhoneOperator` va `isValidUzPhone`.
 - Qoraqalpoq tili: `kaa-Latn`, `kaa-Cyrl` locale'lari, `normalizeKaa`, `toUpperKaa`, `toLowerKaa`, `transliterate` orqali lotin ↔ kirill.
 - `humanizeList` ning bogʻlovchisi endi ixtiyoriy: berilmasa tilga qarab `va` yoki `hám`.
 
