@@ -110,22 +110,26 @@ humanizeList(['olma', 'anor', 'behi']) // "olma, anor va behi"
 | 90, 91 | Beeline |
 | 93, 94, 50 | Ucell |
 | 88, 97 | Mobiuz |
-| 95, 99, 77 | Uzmobile |
+| 95, 99, 77, 70 | Uzmobile |
 | 33 | Humans |
 | 98 | Perfectum |
 | 20 | OQ |
 
 > Kod raqam qaysi operatorga ajratilganini bildiradi. Raqam boshqa operatorga koʻchirilgan boʻlsa, natija eski operatorni koʻrsatadi.
 
+Mobil kodlar uchun manba: [UZTELECOM: 95, 99, 77 va 70](https://uztelecom.uz/uz/yangiliklar/aksiyalar/100-gacha-chegirma-bilan-chiroyli-raqam-uztelecom-aksiyani-2026-yil-oxirigacha-uzaytirmoqda/) (2026-10-26 da tekshirilgan).
+
 ### Qoʻshimchalar
 ```js
 import { addSuffix } from "humanize-uz"
 
-// Imlo qoidasi: k, g dan keyin -ka; q, gʻ dan keyin -qa
+// Imlo qoidasi: k dan keyin -ka; q dan keyin -qa; boshqa hollarda -ga
 addSuffix("maktab", "ga")    // "maktabga"
 addSuffix("bank", "ga")      // "bankka"
 addSuffix("qishloq", "ga")   // "qishloqqa"
-addSuffix("tong", "ga")      // "tongga" (ng — bitta tovush)
+addSuffix("tong", "ga")      // "tongga"
+addSuffix("barg", "ga")      // "bargga"
+addSuffix("bogʻ", "ga")      // "bogʻga"
 
 // Songa — chiziqcha bilan, sonning oʻqilishiga qarab
 addSuffix(5, "ga")           // "5-ga"
@@ -135,6 +139,10 @@ addSuffix(2026, "da")        // "2026-da"
 
 addSuffix("банк", "ga", { locale: "uz-Cyrl" })  // "банкка"
 ```
+
+Qoida manbasi: [O‘zbek tilining asosiy imlo qoidalari, 37-qoida](https://lex.uz/docs/-1625271).
+`addSuffix` asos va qo‘shimchani birgalikda tanlangan `locale` yozuviga o‘tkazadi.
+Bu funksiya hozircha `ga`/`gacha` almashinishini qo‘llaydi; umumiy morfologik analizator emas.
 
 ### Saralash va qidiruv
 ```js
@@ -233,15 +241,18 @@ O‘zbek tilida sondan keyin ot birlikda qoladi: **"5 kitob"**, "5 kitoblar" ema
 | `humanizeDate` (ertangi kun) | `"-1 kun oldin"` | `"ertaga"` |
 | `humanizeCurrency(1234.567)` | `"1 234.567 soʻm"` | `"1 234.57 soʻm"` |
 
-- Notoʻgʻri sana, `NaN` yoki `Infinity` berilsa, funksiyalar endi `RangeError` tashlaydi.
+- `humanizeDate`, `timeAgo` va `humanizeTimeRange` noto‘g‘ri sanaga `RangeError` tashlaydi. Son formatlovchilari `NaN` va ±`Infinity` ni rad qiladi; `numberToWords` va `ordinalToWords` xavfsiz butun sonni talab qiladi. `humanizeNumber` va `humanizeOrdinal` dagi bu validatsiya 1.3.0 da to‘ldirildi (1.2.0 da ular satr qaytaradi).
 - Paketga faqat `import { ... } from "humanize-uz"` orqali murojaat qilinadi; `humanize-uz/dist/...` kabi ichki yoʻllar `exports` sababli yopilgan.
 - Node.js 18 yoki undan yangi versiya talab qilinadi.
 
 ## Versiyalar
 
-**Keyingi versiya** (hali chiqarilmagan):
-- Yangi: `amountToWords` (summani soʻz bilan), `ordinalToWords` (tartib sonni soʻz bilan).
+**1.3.0** (hali chiqarilmagan):
+- Tuzatishlar: qo‘shimcha imlosi va yozuvi, katta summalar, so‘z oxiridagi apostroflar, noto‘g‘ri sanalar, `NaN`/`Infinity`, 70 mobil kodi. [Batafsil tarix](CHANGELOG.md).
 - Yangi: `addSuffix` (-ga/-ka/-qa qoidasi), `compareUz` va `searchKey` (saralash va qidiruv), `getPhoneOperator` va `isValidUzPhone`.
+
+**1.2.0** — 2026-10-25:
+- Yangi: `amountToWords` (summani soʻz bilan), `ordinalToWords` (tartib sonni soʻz bilan).
 - Qoraqalpoq tili: `kaa-Latn`, `kaa-Cyrl` locale'lari, `normalizeKaa`, `toUpperKaa`, `toLowerKaa`, `transliterate` orqali lotin ↔ kirill.
 - `humanizeList` ning bogʻlovchisi endi ixtiyoriy: berilmasa tilga qarab `va` yoki `hám`.
 
@@ -250,6 +261,14 @@ O‘zbek tilida sondan keyin ot birlikda qoladi: **"5 kitob"**, "5 kitoblar" ema
 - Yangi eksportlar: `numberToWords`, `humanizeOrdinal`, `humanizeTimeRange`, `humanizeFileSize`, `humanizePhoneNumber`, `humanizeList`.
 - Tuzatishlar: `timeAgo`, `humanizeDate`, `humanizeNumber`, `numberToWords`, `humanizeCurrency`, `humanizeFileSize` (yuqoridagi jadvalga qarang).
 - `pluralizeUz` eskirgan deb belgilandi.
+
+## Aniqlik va kiritma cheklovlari
+
+- `humanizeCurrency` va `amountToWords` JavaScript `number` hamda `toFixed(2)` bilan ishlaydi. Masalan, `humanizeCurrency(1.005)` → `"1 soʻm"`; o‘nlik half-up yaxlitlash kafolatlanmaydi. Pulni hisoblash va tayyor summani matnga formatlash alohida vazifalardir.
+- `humanizeCurrency` modul qiymati `1e21` yoki undan katta summani eksponent yozuvda saqlaydi: `humanizeCurrency(1e30)` → `"1e+30 soʻm"` (1.3.0 da tuzatilgan).
+- `isValidUzPhone` hozir raqam bo‘lmagan belgilarni olib tashlab tekshiradi; bu qat’iy matn validatori emas. Raqam faolligi va MNP’dan keyingi operatorni aniqlamaydi.
+- `normalizeUz` so‘z oxiridagi o/g apostrofini ham kanonik shaklga keltiradi. o/g dan keyingi yopuvchi qo‘shtirnoqni harf belgisidan kontekstsiz farqlamaydi.
+- TypeScript locale va kiritma turlarini cheklaydi. JavaScript’dan noma’lum locale yoki tipdan tashqari qiymatlar berish uchun umumiy runtime validatsiya kafolatlanmaydi.
 
 ## Ishlab chiqish
 

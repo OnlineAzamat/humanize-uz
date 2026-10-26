@@ -142,3 +142,6 @@ dist
 
 # npm tokenlari
 .npmrc
+
+# Lokal audit va ishchi hujjatlar
+/docs/

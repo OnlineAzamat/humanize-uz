@@ -43,3 +43,8 @@ describe("isValidUzPhone", () => {
     expect(isValidUzPhone("90123456")).toBe(false);
   });
 });
+
+it.each(["701234567", "+998 (70) 123-45-67", 998701234567])("recognizes the 70 mobile code: %s", phone => {
+  expect(getPhoneOperator(phone)).toBe("Uzmobile");
+  expect(isValidUzPhone(phone)).toBe(true);
+});

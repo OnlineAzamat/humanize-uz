@@ -19,15 +19,16 @@ export function humanizeCurrency(
     throw new RangeError(`Noto'g'ri summa: ${amount}`);
   }
 
-  // Ko'pi bilan 2 xona kasr qismi, ortiqcha nollarsiz
-  const [integer, fraction] = Math.abs(amount)
-    .toFixed(2)
-    .replace(/\.?0+$/, "")
-    .split(".");
-  // Belgi yaxlitlashdan keyin aniqlanadi: -0.001 -> "0", "-0" emas
-  const sign = amount < 0 && (integer !== "0" || fraction) ? "-" : "";
-  // Raqamlarni 3 xonadan ajratish (faqat butun qismda)
-  const formattedNumber = groupThousands(integer) + (fraction ? "." + fraction : "");
+  const fixed = Math.abs(amount).toFixed(2);
+  // >= 1e21 uchun toFixed eksponent yozuv qaytaradi. Uning darajasidagi
+  // nollarni kasr oxiridagi nollar deb olib tashlash mumkin emas.
+  let formattedNumber = fixed;
+  if (!fixed.includes("e")) {
+    const [integer, fraction] = fixed.split(".");
+    const trimmedFraction = fraction.replace(/0+$/, "");
+    formattedNumber = groupThousands(integer) + (trimmedFraction ? "." + trimmedFraction : "");
+  }
+  const sign = amount < 0 && Number(fixed) !== 0 ? "-" : "";
 
   if (currency === "USD") {
     return `${sign}$${formattedNumber}`;

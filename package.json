@@ -1,6 +1,6 @@
 {
   "name": "humanize-uz",
-  "version": "1.1.0",
+  "version": "1.3.0",
   "description": "Raqam, sana va matnni oʻzbek tilida (lotin, 2026-yilgi lotin va kirill) inson oʻqiydigan koʻrinishga keltiruvchi kutubxona",
   "type": "module",
   "main": "./dist/index.js",

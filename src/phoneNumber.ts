@@ -32,7 +32,8 @@ const OPERATOR_CODES: Record<string, UzMobileOperator> = {
   "90": "Beeline", "91": "Beeline",
   "93": "Ucell", "94": "Ucell", "50": "Ucell",
   "88": "Mobiuz", "97": "Mobiuz",
-  "95": "Uzmobile", "99": "Uzmobile", "77": "Uzmobile",
+  // UZTELECOM mobil kodlari: 95, 99, 77, 70 (2026-10-26 da tekshirilgan).
+  "70": "Uzmobile", "95": "Uzmobile", "99": "Uzmobile", "77": "Uzmobile",
   "33": "Humans",
   "98": "Perfectum",
   "20": "OQ",

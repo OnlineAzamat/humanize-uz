@@ -85,3 +85,7 @@ describe("detectScript", () => {
     expect(detectScript("O'zbekiston")).toBe("uz-Latn")
   });
 });
+
+it("transliterates a word-final ASCII apostrophe", () => {
+  expect(transliterate("bog'", { to: "uz-Cyrl" })).toBe("боғ");
+});

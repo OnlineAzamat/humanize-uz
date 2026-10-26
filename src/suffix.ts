@@ -2,18 +2,15 @@ import { localize, isKaa, type LocaleOptions } from "./locale.js";
 import { transliterate } from "./transliterate.js";
 import { lastNumberWord, uz } from "./words.js";
 
-// Imlo qoidasi: -ga va -gacha qoʻshimchalari
-// k yoki g bilan tugagan soʻzga -ka/-kacha (bankka, bargka),
-// q yoki gʻ bilan tugagan soʻzga -qa/-qacha (qishloqqa, bogʻqa) shaklida qoʻshiladi;
-// ng bilan tugagan soʻzga oʻzgarishsiz: tongga.
+// Lex.uz, 37-qoida: https://lex.uz/docs/-1625271
+// k -> -ka/-kacha, q -> -qa/-qacha; boshqa hollarda g saqlanadi.
 const ASSIMILATING = new Set(["ga", "gacha"]);
 
 function assimilate(lastWord: string, suffix: string): string {
   if (!ASSIMILATING.has(suffix)) return suffix;
   const word = lastWord.toLowerCase();
-  if (/(gʻ|q)$/.test(word)) return "q" + suffix.slice(1);
-  // "ng" bitta tovush: tongga, mingga
-  if (/k$|(?<!n)g$/.test(word)) return "k" + suffix.slice(1);
+  if (/q$/.test(word)) return "q" + suffix.slice(1);
+  if (/k$/.test(word)) return "k" + suffix.slice(1);
   return suffix;
 }
 
@@ -42,10 +39,8 @@ export function addSuffix(word: string | number, suffix: string, options: Locale
     return `${word}-${localize(chosen, options.locale)}`;
   }
 
-  // Soʻz qaysi yozuvda boʻlmasin, oxirgi harfi amaldagi lotin imlosida tekshiriladi
-  // Soʻz oxiridagi apostrof ("bog'") normalizeUz tomonidan tuzatilmaydi: u faqat harflar orasida ishlaydi
-  const ending = word.replace(/([GgOo])['`´‘’ʼ]$/u, "$1ʻ");
-  const latin = transliterate(ending, { to: "uz-Latn" }).replace(/[^\p{L}ʻ]+$/u, "");
-  const chosen = assimilate(latin, bare);
-  return word + localize(chosen, options.locale);
+  // Asosni ham tanlangan yozuvga o'tkazamiz; qoida uchun amaldagi lotin ishlatiladi.
+  const latin = transliterate(word, { to: "uz-Latn" });
+  const chosen = assimilate(latin.replace(/[^\p{L}ʻ]+$/u, ""), bare);
+  return localize(latin + chosen, options.locale);
 }

@@ -11,7 +11,7 @@ export function humanizeNumber(n: number, options: LocaleOptions = {}): string {
 }
 
 function shortNumber(n: number, lang: LanguageWords): string {
-  if (!Number.isFinite(n)) return String(n);
+  if (!Number.isFinite(n)) throw new RangeError(`Notoʻgʻri son: ${n}`);
   const sign = n < 0 ? "-" : "";
   const abs = Math.abs(n);
 
@@ -74,6 +74,7 @@ export function humanizeOrdinal(
   type: "short" | "full" = "short",
   options: LocaleOptions = {}
 ): string {
+  if (!Number.isFinite(n)) throw new RangeError(`Notoʻgʻri son: ${n}`);
   if (type === "short") {
     return `${n}-`;
   }

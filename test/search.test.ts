@@ -39,3 +39,9 @@ describe("searchKey", () => {
     expect(searchKey("maʼno", { loose: true })).toBe("mano");
   });
 });
+
+it("matches final apostrophe variants in sorting and both search modes", () => {
+  expect(compareUz("bog'", "bogʻ")).toBe(0);
+  expect(searchKey("bog'")).toBe(searchKey("bogʻ"));
+  expect(searchKey("bog'", { loose: true })).toBe(searchKey("bogʻ", { loose: true }));
+});
