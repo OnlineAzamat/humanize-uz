@@ -31,3 +31,9 @@ describe("humanizeCurrency", () => {
     expect(humanizeCurrency(100, "EUR" as "UZS")).toBe("100");
   });
 });
+
+it.each([1e21, 1e30, -1e30, 1.2345e30, Number.MAX_VALUE])("preserves the magnitude of %s", amount => {
+  const result = humanizeCurrency(amount).replace(/ soʻm$/, "").replaceAll(" ", "");
+  expect(Number(result)).toBe(amount);
+  expect(humanizeCurrency(amount, "USD")).toBe(`${amount < 0 ? "-" : ""}$${Math.abs(amount)}`);
+});

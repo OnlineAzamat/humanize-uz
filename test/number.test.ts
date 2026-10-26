@@ -101,3 +101,9 @@ describe("ordinalToWords", () => {
     expect(() => ordinalToWords(1.5)).toThrow(RangeError);
   });
 });
+
+it.each([NaN, Infinity, -Infinity])("rejects non-finite formatter inputs: %s", n => {
+  expect(() => humanizeNumber(n)).toThrow(RangeError);
+  expect(() => humanizeOrdinal(n)).toThrow(RangeError);
+  expect(() => humanizeOrdinal(n, "full")).toThrow(RangeError);
+});

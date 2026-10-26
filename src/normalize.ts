@@ -19,6 +19,10 @@ export function normalizeUz(text: string): string {
   return text
     .normalize("NFC")
     .replace(/[ȘșǦǧ]/g, (ch) => LOOKALIKES[ch])
+    // Oʻ/gʻ belgisi soʻz oxirida va tinish belgisidan oldin ham normallashtiriladi.
+    .replace(/([OoGg])(['`´‘’ʻʼ]+)(?![\p{L}'`´‘’ʻʼ])/gu, (_, prev: string, marks: string) =>
+      prev + (marks.length > 1 ? "ʻʼ" : "ʻ")
+    )
     .replace(APOSTROPHE_RUN, (_, prev: string, marks: string) => {
       if (!/[OoGg]/.test(prev)) return prev + "ʼ";
       // "mo''jiza" -> "moʻʼjiza": oʻ dan keyin tutuq belgisi

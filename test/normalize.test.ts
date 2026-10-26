@@ -33,3 +33,9 @@ describe("normalizeUz", () => {
     expect(normalizeUz(normalizeUz("to'g'ri ma'no"))).toBe("toʻgʻri maʼno")
   });
 });
+
+it.each(["'", "`", "´", "‘", "’", "ʻ", "ʼ"])("normalizes final o/g with %s", mark => {
+  expect(normalizeUz(`bog${mark}`)).toBe("bogʻ");
+  expect(normalizeUz(`o${mark}, bog${mark} bor`)).toBe("oʻ, bogʻ bor");
+  expect(normalizeUz(normalizeUz(`bog${mark}`))).toBe("bogʻ");
+});

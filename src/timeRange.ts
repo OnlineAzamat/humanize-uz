@@ -18,6 +18,9 @@ function kaaTime(date: Date): string {
  * @example humanizeTimeRange(start, end, { locale: "uz-Cyrl" }) // "10 август, 2025, 09:00 - 17:30"
  */
 export function humanizeTimeRange(start: Date, end: Date, options: LocaleOptions = {}): string {
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+    throw new RangeError("Notoʻgʻri vaqt oraligʻi: sana yaroqsiz");
+  }
   if (isKaa(options.locale)) {
     const range = kaaDate(start) === kaaDate(end)
       ? `${kaaDate(start)}, ${kaaTime(start)} - ${kaaTime(end)}`
